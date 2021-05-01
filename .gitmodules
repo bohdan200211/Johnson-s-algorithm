@@ -1,0 +1,3 @@
+[submodule "extern/FibHeapLib"]
+	path = extern/FibHeapLib
+	url = https://github.com/bohdan200211/FibonacciHeapLib
