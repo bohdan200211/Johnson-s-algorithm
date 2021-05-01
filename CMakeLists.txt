@@ -3,5 +3,6 @@ project(johnson_algorithm)
 
 set(CMAKE_CXX_STANDARD 20)
 
+add_subdirectory(extern/FibHeapLib)
 add_subdirectory(include)
 add_subdirectory(src)

@@ -9,12 +9,16 @@
 #include <sstream>
 #include <string>
 
+class GraphAlgo;
+
 class Graph {
 private:
     using Type = int;
 
     std::vector<std::vector<Type>> m_Edges;
     const std::string              relativePath;
+
+    friend class GraphAlgo;
 
 public:
     explicit Graph(const std::string & path);
