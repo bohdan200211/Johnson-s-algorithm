@@ -16,7 +16,7 @@ private:
     using Type = int;
 
     std::vector<std::vector<Type>> m_Edges;
-    const std::string              relativePath;
+    const std::string              Path;
 
     friend class GraphAlgo;
 
@@ -30,8 +30,10 @@ public:
     void PrintGraph() const;
 };
 
-Graph::Graph(const std::string & path)
-    : relativePath("../../" + path) {
+Graph::Graph(const std::string & _path)
+    : Path(_path) {
+
+    const std::string relativePath = "../../" + _path;
 
     std::ifstream dotFile;
     dotFile.open(relativePath);
@@ -82,8 +84,8 @@ Graph::Graph(const std::string & path)
 }
 
 void Graph::PrintGraph() const {
-    std::string Path = "dot -Tpdf " + relativePath + " -o ../../src/outfile.pdf";
-    system(Path.c_str());
+    std::string path = "dot -Tpdf ../../" + Path + " -o ../../" + Path.substr(0, Path.size() - 3) + "pdf";
+    system(path.c_str());
 }
 
 size_t Graph::GetVtxSize() const { return m_Edges.size(); }

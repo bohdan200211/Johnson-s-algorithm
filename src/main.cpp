@@ -4,10 +4,10 @@
 
 
 
-int main () {
+int main () try {
 //
 
-    Graph G("src/graph.dot");
+    Graph G("src/G.dot");
 
     arr<arr<int>> W = {
             {0, 3, 8, 0, -4},
@@ -21,5 +21,8 @@ int main () {
 
 
     std::cout << "br point\n";
-//    G.PrintGraph();
+    G.PrintGraph();
+
+} catch (const std::exception & ex) {
+    std::cout << ex.what();
 }
