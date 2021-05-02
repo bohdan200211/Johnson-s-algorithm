@@ -19,5 +19,7 @@ int main () {
 
     arr<arr<int>> D = GraphAlgo::Johnson(G, W);
 
+
+    std::cout << "br point\n";
 //    G.PrintGraph();
 }

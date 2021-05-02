@@ -28,7 +28,9 @@ void GraphAlgo::_initialize_single_source (arr<std::pair<int, int>> & DistPredec
 }
 
 void GraphAlgo::_relax (arr<std::pair<int, int>> & DistPredecessor, const WeightMatrix & W, int u, int v) {
-    if (DistPredecessor[v].first  > DistPredecessor[u].first + W[u][v]) {
+    if (DistPredecessor[u].first != INT32_MAX
+        && DistPredecessor[v].first  > DistPredecessor[u].first + W[u][v]) {
+
         DistPredecessor[v].first  = DistPredecessor[u].first + W[u][v];
         DistPredecessor[v].second = u;
     }
@@ -43,7 +45,7 @@ bool GraphAlgo::BellmanFord (const Graph & G, arr<std::pair<int, int>> & DistPre
     _initialize_single_source(DistPredecessor, source);
     for (int i = 1; i < n; i++) {
 
-        for (int u = 0; u < n   ; u++) {
+        for (int u = 0; u < n; u++) {
             for (int v = 0; v < n; v++) {
                 if (G.m_Edges[u][v] == 1) {
                     _relax(DistPredecessor, W, u, v);
@@ -70,8 +72,11 @@ void GraphAlgo::Dijkstra (const Graph & G, arr<std::pair<int, int>> & DistPredec
 
     FibHeap<int, int> Q;
     arr<FibNode<int, int>*> TableVrtx(G.GetVtxSize());
+
+    arr<bool> S(G.GetVtxSize(), true);
+
     for (int i = 0; i < G.GetVtxSize(); i++) {
-        TableVrtx[i] = new FibNode<int, int>(i, DistPredecessor[i].first);
+        TableVrtx[i] = new FibNode<int, int>(DistPredecessor[i].first, i);
         Q.Insert(TableVrtx[i]);
     }
 
@@ -79,9 +84,10 @@ void GraphAlgo::Dijkstra (const Graph & G, arr<std::pair<int, int>> & DistPredec
     while (!Q.isEmpty()) {
         sVrtx = Q.ExtractMinimumNode();
 
-        int u = sVrtx->GetKey();
+        int u = sVrtx->GetData();
+        S[u] = false;
         for (int v = 0; v < G.GetVtxSize(); v++) {
-            if (G.m_Edges[u][v] == 1) {
+            if (G.m_Edges[u][v] == 1 && S[v]) {
                 _relax(DistPredecessor, W, u, v);
                 Q.DecreaseKey(TableVrtx[v], W[u][v]);
             }
@@ -104,7 +110,7 @@ arr<arr<int>> GraphAlgo::Johnson(Graph G, WeightMatrix W) {
 
     arr<std::pair<int, int>> h(G.GetVtxSize(), {0, 0});
 
-    if (BellmanFord(G, h, W, n)) {
+    if (!BellmanFord(G, h, W, n)) {
         throw std::runtime_error("Bellman-Fold algo finished with exit code 0");
     }
 
@@ -115,13 +121,13 @@ arr<arr<int>> GraphAlgo::Johnson(Graph G, WeightMatrix W) {
             }
         }
     }
-
+    G.m_Edges.pop_back();
 
     arr<arr<int>> D(n, arr<int>(n));
 
     arr<std::pair<int, int>> DistPredecessor(G.GetVtxSize(), {0, 0});
     for (int u = 0; u < n; ++u) {
-        Dijkstra(G, h, W, u);
+        Dijkstra(G, DistPredecessor, W, u);
 
         for (int v = 0; v < n; ++v) {
             D[u][v] = DistPredecessor[v].first + h[v].first - h[u].first;
