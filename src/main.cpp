@@ -20,8 +20,15 @@ int main () try {
     arr<arr<int>> D = GraphAlgo::Johnson(G, W);
 
 
-    std::cout << "br point\n";
     G.PrintGraph();
+
+
+    /*for (auto & row : D) {
+        for (auto & cell : row) {
+            std::cout << cell << ' ';
+        }
+        std::cout << std::endl;
+    }*/
 
 } catch (const std::exception & ex) {
     std::cout << ex.what();

@@ -73,7 +73,7 @@ void GraphAlgo::Dijkstra (const Graph & G, arr<std::pair<int, int>> & DistPredec
     FibHeap<int, int> Q;
     arr<FibNode<int, int>*> TableVrtx(G.GetVtxSize());
 
-    arr<bool> S(G.GetVtxSize(), true);
+    arr<bool> Set(G.GetVtxSize(), true);
 
     for (int i = 0; i < G.GetVtxSize(); i++) {
         TableVrtx[i] = new FibNode<int, int>(DistPredecessor[i].first, i);
@@ -84,10 +84,10 @@ void GraphAlgo::Dijkstra (const Graph & G, arr<std::pair<int, int>> & DistPredec
     while (!Q.isEmpty()) {
         sVrtx = Q.ExtractMinimumNode();
 
-        int u = sVrtx->GetData();
-        S[u] = false;
+        auto u = sVrtx->GetData();
+        Set[u] = false;
         for (int v = 0; v < G.GetVtxSize(); v++) {
-            if (G.m_Edges[u][v] == 1 && S[v]) {
+            if (G.m_Edges[u][v] == 1 && Set[v]) {
                 _relax(DistPredecessor, W, u, v);
                 Q.DecreaseKey(TableVrtx[v], W[u][v]);
             }
