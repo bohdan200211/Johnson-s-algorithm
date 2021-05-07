@@ -1,3 +1,6 @@
 [submodule "extern/FibHeapLib"]
 	path = extern/FibHeapLib
 	url = https://github.com/bohdan200211/FibonacciHeapLib
+[submodule "extern/libfort"]
+	path = extern/libfort
+	url = https://github.com/seleznevae/libfort

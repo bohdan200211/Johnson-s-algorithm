@@ -2,8 +2,7 @@
 
 #include "../Graph/Graph.hpp"
 
-template <class T>
-using arr = std::vector<T>;
+
 using WeightMatrix = arr<arr<int>>;
 
 class GraphAlgo {

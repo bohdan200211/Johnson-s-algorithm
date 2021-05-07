@@ -9,14 +9,18 @@
 #include <sstream>
 #include <string>
 
+template <class T>
+using arr = std::vector<T>;
+
 class GraphAlgo;
 
 class Graph {
 private:
     using Type = int;
 
-    std::vector<std::vector<Type>> m_Edges;
-    const std::string              Path;
+    arr<arr<Type>>    m_Edges;
+    const std::string Path;
+    //W[n][n]
 
     friend class GraphAlgo;
 
@@ -27,6 +31,7 @@ public:
     const Type & operator()(size_t idx, size_t idy) const { return m_Edges[idx][idy]; }
 
     size_t GetVtxSize() const;
+    const arr<arr<Type>> & GetEdges () const { return m_Edges; }
     void PrintGraph() const;
 };
 
@@ -58,25 +63,26 @@ Graph::Graph(const std::string & _path)
 
     //read input
     std::string word;
-    int prev_v_id;
 
     while (getline(dotFile, text)) {
         if (text[0] == '}') {
             break;
         }
 
-        prev_v_id = -1;
-
         std::istringstream iss(text);
-        while (iss >> word) {
-            if (prev_v_id == -1) {
-                prev_v_id = std::stoi(word);
-            }
-            else if (word != "->") {
-                int temp                 = std::stoi(word);
-                m_Edges[prev_v_id][temp] = 1;
-                prev_v_id                = temp;
-            }
+
+        //read source vertex
+        iss >> word;
+        int SourceVertex = std::stoi(word);
+
+        //skip "-> {"
+        iss >> word;
+        iss >> word;
+
+
+        while (iss >> word && word[0] != '}') {
+            int temp                    = std::stoi(word);
+            m_Edges[SourceVertex][temp] = 1;
         }
     }
 
