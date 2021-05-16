@@ -74,21 +74,24 @@ void GraphAlgo::Dijkstra (const Graph & G, arr<std::pair<int, int>> & DistPredec
 
     arr<bool> Set(G.GetVtxSize(), true);
 
-    for (int i = 0; i < G.GetVtxSize(); i++) {
+    for (int i = 0; i < G.GetVtxSize(); ++i) {
         TableVrtx[i] = new FibNode<int, int>(DistPredecessor[i].first, i);
         Q.Insert(TableVrtx[i]);
     }
 
     FibNode<int, int> * sVrtx;
+
     while (!Q.isEmpty()) {
         sVrtx = Q.ExtractMinimumNode();
 
+
         auto u = sVrtx->GetData();
         Set[u] = false;
-        for (int v = 0; v < G.GetVtxSize(); v++) {
+
+        for (int v = 0; v < G.GetVtxSize(); ++v) {
             if (G.m_Edges[u][v] == 1 && Set[v]) {
                 _relax(DistPredecessor, W, u, v);
-                Q.DecreaseKey(TableVrtx[v], W[u][v]);
+                Q.DecreaseKey(TableVrtx[v], DistPredecessor[v].first);
             }
         }
     }
@@ -106,7 +109,6 @@ arr<arr<int>> GraphAlgo::Johnson(Graph G, WeightMatrix W) {
     }
 
 
-
     arr<std::pair<int, int>> h(G.GetVtxSize(), {0, 0});
 
     if (!BellmanFord(G, h, W, n)) {
@@ -115,7 +117,7 @@ arr<arr<int>> GraphAlgo::Johnson(Graph G, WeightMatrix W) {
 
     for (int u = 0; u < n; u++) {
         for (int v = 0; v < n; v++) {
-            if (G.m_Edges[u][v] == 1) {
+            if (G.m_Edges[u][v] == 1 && W[u][v] != INT32_MAX) {
                 W[u][v] += h[u].first - h[v].first;
             }
         }

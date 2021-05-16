@@ -20,7 +20,6 @@ private:
 
     arr<arr<Type>>    m_Edges;
     const std::string Path;
-    //W[n][n]
 
     friend class GraphAlgo;
 
