@@ -37,13 +37,15 @@ void GenerateDot (const int n, const std::string & path, float probability = 0.5
     dotFile.close();
 }
 
-arr<arr<int>> GenerateWeightedMatrix (const int n, const int mod = 10) {
+arr<arr<int>> GenerateWeightedMatrix (const int n, const arr<arr<int>> & E, const int mod = 10) {
+    srand(time(nullptr));
     arr<arr<int>> W(n, arr<int>(n, 0));
 
     for (int i = 0; i < n; ++i) {
         for (int j = 0; j < n; ++j) {
-            if (i != j) {
-                W[i][j] = rand() % mod;
+            if (E[i][j]) {
+                W[i][j] = rand() % mod/* - mod / 5*/;
+//                W[i][j] = i + j;
             }
         }
     }
@@ -58,7 +60,9 @@ void PrintMatrix (const arr<arr<int>> & Mtx) {
 
     table << fort::header;
 
-    table[0][0] = "N";
+    table[0][0] = "u/v";
+    table[0][0].set_cell_content_text_style(fort::text_style::bold);
+    table[0][0].set_cell_content_fg_color(fort::color::cyan);
     for (int i = 1; i <= n; ++i) {
         table[0][i] = std::to_string(i - 1);
         table[i][0] = std::to_string(i - 1);
@@ -84,16 +88,16 @@ void PrintMatrix (const arr<arr<int>> & Mtx) {
 
 int main () try {
     const char * dotPath = "src/G.dot";
-    const int n          = 8;
+    const int n          = 7;
 
     //генерація графу
     GenerateDot(n, dotPath, 0.3);
-    //генерація вагової матриці
-    arr<arr<int>> W = std::move(GenerateWeightedMatrix(n));
-
-
     //створення графа
     Graph G(dotPath);
+    auto & E = G.GetEdges();
+    //генерація вагової матриці
+    arr<arr<int>> W = std::move(GenerateWeightedMatrix(n, E));
+
 
 
     //алгоритм
@@ -103,11 +107,6 @@ int main () try {
     //вивід
     G.PrintGraph();
 
-    auto & E = G.GetEdges();
-
-
-    std::cout << "********************  E  ********************\n";
-    PrintMatrix(E);
 
     std::cout << "********************  W  ********************\n";
     PrintMatrix(W);
